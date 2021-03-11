@@ -52,10 +52,10 @@ if __name__ == '__main__':
     model = pickle.load(open(f'{models_folder}model.sav', 'rb'))
 
     prediction = model.predict(test_x_normalized)
-    print(prediction[0])
+
     labels = np.argmax(prediction, 1)
     for x, y, z in list(zip(test_x, test_y, labels)):
-        plt.title(f"Predicted: {labelNames[z]}({100 * np.max(prediction)}); From table: {labelNames[y]}")
+        plt.title(f"Predicted: {labelNames[z]}; From table: {labelNames[y]}")
         plt.imshow(x)
         plt.show()
         cmd = str(input()).lower()
