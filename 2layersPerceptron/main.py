@@ -26,17 +26,6 @@ def fit_model(train_x_, train_y_, test_x_, test_y_, model_):
     pickle.dump(model_, open(f'{models_folder}model.sav', 'wb'))
 
 
-def plot_value_array( predictions_array, true_label):
-    plt.grid(False)
-    plt.xticks([])
-    plt.yticks([])
-    thisplot = plt.bar(range(10), predictions_array, color="#777777")
-    plt.ylim([0, 1])
-    predicted_label = np.argmax(predictions_array)
-
-    thisplot[predicted_label].set_color('red')
-    thisplot[true_label].set_color('blue')
-
 if __name__ == '__main__':
 
     train_x = train_x.reshape(60000, 28 * 28)
