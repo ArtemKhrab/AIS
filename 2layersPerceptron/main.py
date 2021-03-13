@@ -31,9 +31,10 @@ if __name__ == '__main__':
     train_x = train_x.reshape(60000, 28 * 28)
     test_x_normalized = test_x.reshape(10000, 28 * 28)
     train_x = train_x.astype('float32') / 255
-    test_x = test_x.astype('float32') / 255
+    test_x_normalized = test_x_normalized.astype('float32') / 255
 
     train_y = keras.utils.to_categorical(train_y)
+    test_y_normalized = keras.utils.to_categorical(test_y)
 
     # model = Sequential()
     #
@@ -46,8 +47,8 @@ if __name__ == '__main__':
     # model.compile(optimizer='rmsprop',
     #               loss='categorical_crossentropy',
     #               metrics=['accuracy'])
-
-    # fit_model(train_x, train_y, test_x, test_y, model)
+    #
+    # fit_model(train_x, train_y, test_x_normalized, test_y_normalized, model)
 
     model = pickle.load(open(f'{models_folder}model.sav', 'rb'))
 
