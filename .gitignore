@@ -1,2 +1,8 @@
 .DS_Store
 /2layersPerceptron/.idea/
+/8-puzzle/
+/pacman/venv/
+/pacman/.idea/
+/pacman/__pycache__/
+
+
