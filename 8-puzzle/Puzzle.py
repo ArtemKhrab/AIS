@@ -33,7 +33,7 @@ class Puzzle:
 
     def h1(self):
         diff = 0
-        for g_s, s in zip(self.goal_state,self.state):
+        for g_s, s in zip(self.goal_state, self.state):
             if g_s != s:
                 diff += 1
         return diff
@@ -77,10 +77,10 @@ class Puzzle:
         return children
 
     def find_solution(self):
-        solution = []
-        solution.append(self.action)
+        solution = [self.action]
         path = self
-        while path.parent != None:
+
+        while path.parent is not None:
             path = path.parent
             solution.append(path.action)
         solution = solution[:-1]

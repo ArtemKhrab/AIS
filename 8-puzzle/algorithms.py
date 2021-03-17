@@ -1,6 +1,8 @@
 from Puzzle import Puzzle
 from sys import maxsize
 import time
+from queue import Queue
+from tabulate import tabulate
 
 
 def recursive_best_first_search(initial_state):
@@ -35,15 +37,82 @@ def RBFS_search(node, f_limit):
     return result, node.h1()
 
 
-if __name__ == '__main__':
-    states = [[1, 3, 4, 8, 6, 2, 7, 0, 5], [2, 8, 1, 0, 4, 3, 7, 6, 5], [2, 8, 1, 4, 6, 3, 0, 7, 5]]
+def breadth_first_search(initial_state):
+    start_node = Puzzle(initial_state, None, None, 0)
+    h1 = start_node.h1()
+    if start_node.goal_test():
+        return start_node.find_solution(), h1
+    q = Queue()
+    q.put(start_node)
+    explored = []
+    while not(q.empty()):
+        node = q.get()
+        print(q.qsize())
+        explored.append(node.state)
+        children = node.generate_child()
+        for child in children:
+            if child.state not in explored:
+                if child.goal_test():
+                    return child.find_solution(), h1
+                q.put(child)
+    return
 
-    for state in states:
+
+def iterative_deep_search(initial_state, depth_limit):
+    depth = 0
+    node = Puzzle(initial_state, None, None, 0)
+    h1 = node.h1()
+    if node.goal_test():
+        return node.find_solution(), h1
+    queue = [[node, depth]]
+    explored = []
+    del node
+    while not(queue.__len__() == 0):
+        node, depth = queue.pop(0)
+        explored.append(node.state)
+        children = node.generate_child()
+        depth += 1
+        for i, child in enumerate(children):
+            if child.state not in explored and depth < depth_limit:
+                if child.goal_test():
+                    return child.find_solution(), h1
+                queue.insert(i, [child, depth])
+
+    return
+
+
+if __name__ == '__main__':
+    states_str = ["1, 3, 4, 8, 6, 2, 7, 0, 5", "2, 8, 1, 0, 4, 3, 7, 6, 5", "2, 8, 1, 4, 6, 3, 0, 7, 5"]
+    states = [[1, 3, 4, 8, 6, 2, 7, 0, 5], [2, 8, 1, 0, 4, 3, 7, 6, 5], [2, 8, 1, 4, 6, 3, 0, 7, 5]]
+    results = []
+
+    for state, start_state_str in zip(states, states_str):
+
         Puzzle.num_of_instances = 0
         t0 = time.time()
-        RBFS = recursive_best_first_search(state)
+        rbfs = recursive_best_first_search(state)
         t1 = time.time() - t0
-        print('RBFS:', RBFS[0])
-        print("H1:", RBFS[1])
-        print('space:', Puzzle.num_of_instances)
-        print('time:', t1)
+        results.append(["RBFS", rbfs[1], start_state_str, "1, 2, 3, 8, 0, 4, 7, 6, 5",
+                        t1, Puzzle.num_of_instances, rbfs[0]])
+        del t1
+
+        # Puzzle.num_of_instances = 0
+        # t0 = time.time()
+        # bfs = breadth_first_search(state)
+        # t1 = time.time() - t0
+        # results.append(["BFS", bfs[1], t1, Puzzle.num_of_instances])
+        # del t1
+
+        Puzzle.num_of_instances = 0
+        t0 = time.time()
+        ids = iterative_deep_search(state, 25)
+        t1 = time.time() - t0
+        if ids is not None:
+            results.append(["IDS", ids[1], start_state_str, "1, 2, 3, 8, 0, 4, 7, 6, 5",
+                            t1, Puzzle.num_of_instances, ids[0]])
+        else:
+            results.append(["IDS", "Not Found", start_state_str, "1, 2, 3, 8, 0, 4, 7, 6, 5",
+                            t1, Puzzle.num_of_instances, ""])
+        del t1
+
+    print(tabulate(results, headers=["Alg", "H1", "Input State", "Goal State", "Time", "Nodes", "Moves"]))
