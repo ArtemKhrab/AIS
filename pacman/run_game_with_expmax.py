@@ -6,12 +6,14 @@ from time import time
 
 from tabulate import tabulate
 
-PACMAN_DIR = Path(__file__).parent / 'pacman'
+game_dir = Path(__file__).parent / 'pacman'
+
 Ghosts = ['DirectionalGhost', 'RandomGhost']
 
 
 def main():
     results = multiprocessing.Pool().map(run, Ghosts)
+
     print(tabulate(results, headers=["Ghost type", "Win Rate", "Time", "Avg Score", "Scores"]))
 
 # DirectionalGhost, RandomGhost
@@ -21,8 +23,8 @@ def run(ghost_type):
     time_start = time()
 
     output = subprocess.run(
-        f'python {PACMAN_DIR}/pacman.py -p ExpectimaxAgent -g {ghost_type} -a depth=3 -n 30 -q --timeout 5 -c',
-        cwd=PACMAN_DIR, stdout=subprocess.PIPE, shell=True).stdout.splitlines()
+        f'python {game_dir}/pacman.py -p ExpectimaxAgent -g {ghost_type} -a depth=3 -n 30 -q --timeout 5 -c',
+        cwd=game_dir, stdout=subprocess.PIPE, shell=True).stdout.splitlines()
 
     time_delta = time() - time_start
     avg_score = output[-4].decode("utf-8").split("', ")[-1].replace(")", '').strip()
